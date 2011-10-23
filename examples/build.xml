@@ -1,0 +1,66 @@
+<project name="examples" default="compile" basedir=".">
+
+  <target name="init">
+    <tstamp/>
+
+    <property name="src.dir"    value="src" />
+    <property name="build.dir"  value="build" />
+    <property name="lib.dir"    value="lib" />
+    <property name="dist.dir"   value="dist" />
+    <property name="main.class" value="MainClass"/> <!-- you Main-Class name for uber jar -->
+
+    <property name="compile.debug"       value="true" />
+    <property name="compile.optimize"    value="true" />
+    <property name="compile.target"      value="1.5" />
+    <property name="compile.source"      value="1.5" />
+    <property name="compile.deprecation" value="true" />
+
+    <path id="compile.class.path">
+      <pathelement path="../build"/>
+      <!--
+      <pathelement location="${xml-apis.jar}" />
+      <pathelement location="${parser.jar}" />
+      <fileset dir="${lib.dir}">
+        <include name="*.jar" />
+      </fileset>
+      -->
+    </path>
+
+    <path id="run.class.path">
+      <path refid="compile.class.path"/>
+      <pathelement location="${build.dir}"/>
+    </path>
+
+  </target>
+
+  <target name="prepare" depends="init">
+    <mkdir dir="${build.dir}"/>
+  </target>
+
+  <target name="compile" depends="prepare" description="Compiles the source code">
+    <javac srcdir="${src.dir}"
+           destdir="${build.dir}"
+           debug="${compile.debug}"
+           optimize="${compile.optimize}"
+           target="${compile.target}"
+           source="${compile.source}"
+           deprecation="${compile.deprecation}"
+           includeAntRuntime="false">
+      <classpath refid="compile.class.path"/>
+      <compilerarg value="-Xlint:all"/>
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile" description="generate the distribution" >
+    <jar jarfile="${dist.dir}/${ant.project.name}.jar">
+       <fileset dir="${build.dir}"/>
+       <!-- <fileset dir="${src.dir}"/> uncomment if you want to distribute source with jar file -->
+    </jar>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <delete dir="${build.dir}"/>
+  </target>
+
+</project>
+
